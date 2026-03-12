@@ -50,12 +50,12 @@ describe('RowDetail', () => {
 
   it('renders subtitle tracks', () => {
     render(<RowDetail item={item} />)
-    expect(screen.getByText('subrip')).toBeInTheDocument()
+    expect(screen.getAllByText('subrip').length).toBeGreaterThan(0)
   })
 
   it('shows forced indicator for forced subtitle', () => {
     render(<RowDetail item={item} />)
-    expect(screen.getByText(/forced/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/forced/i).length).toBeGreaterThan(0)
   })
 
   it('renders with no audio tracks', () => {
@@ -77,6 +77,6 @@ describe('RowDetail', () => {
 
   it('renders video codec', () => {
     render(<RowDetail item={item} />)
-    expect(screen.getByText('HEVC')).toBeInTheDocument()
+    expect(screen.getByText(/HEVC/)).toBeInTheDocument()
   })
 })

@@ -1,35 +1,52 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import type { MediaParams } from './api'
+import FilterBar from './components/FilterBar'
+import MediaTable from './components/MediaTable'
+import { useFilters } from './hooks/useFilters'
+import { useMedia } from './hooks/useMedia'
 
-function App() {
-  const [count, setCount] = useState(0)
+const DEFAULT_LIMIT = 10
+
+export default function App() {
+  const [filters, setFilters] = useState<Partial<MediaParams>>({})
+  const [sortBy, setSortBy] = useState('filename')
+  const [sortDir, setSortDir] = useState('asc')
+  const [limit, setLimit] = useState(DEFAULT_LIMIT)
+  const [offset, setOffset] = useState(0)
+
+  const filterOptions = useFilters()
+  const { items, total } = useMedia({ ...filters, sortBy, sortDir, limit, offset })
+
+  function handleFilterChange(next: Partial<MediaParams>) {
+    setFilters(next)
+    setOffset(0)
+  }
+
+  function handleSort(col: string, dir: string) {
+    setSortBy(col)
+    setSortDir(dir)
+    setOffset(0)
+  }
+
+  function handlePageChange(newLimit: number, newOffset: number) {
+    setLimit(newLimit)
+    setOffset(newOffset)
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="app">
+      <h1>Media Analyzer</h1>
+      <FilterBar filters={filterOptions} values={filters} onChange={handleFilterChange} />
+      <MediaTable
+        items={items}
+        total={total}
+        sortBy={sortBy}
+        sortDir={sortDir}
+        onSort={handleSort}
+        limit={limit}
+        offset={offset}
+        onPageChange={handlePageChange}
+      />
+    </div>
   )
 }
-
-export default App
