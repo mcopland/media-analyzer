@@ -1,0 +1,8 @@
+[scanner]
+paths = ["/path/to/media", "/another/path"]
+extensions = [".mkv", ".mp4", ".avi", ".mov", ".m4v", ".ts"]
+db_path = "media.db"
+
+[api]
+host = "127.0.0.1"
+port = 8000
